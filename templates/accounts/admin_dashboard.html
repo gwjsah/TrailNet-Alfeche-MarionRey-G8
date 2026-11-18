@@ -1,0 +1,26 @@
+{% extends 'base.html' %}
+
+{% block title %}Trail Admin Dashboard | TrailNet{% endblock %}
+
+{% block content %}
+<div class="card" style="margin-bottom: 1.5rem;">
+    <h1 style="margin-top: 0;">Trail Admin Dashboard</h1>
+    <p>Welcome, <strong>{{ user.first_name|default:user.username }}</strong> ({{ user.get_role_display }})</p>
+    <p class="muted">Manage seed trails, review flagged trail/transportation guides, and monitor the riding community.</p>
+</div>
+
+<div class="grid">
+    <div class="card">
+        <h3 style="margin-top: 0;">Registered Riders</h3>
+        <p style="font-size: 1.8rem; font-weight: 700; margin: 0;">{{ total_riders }}</p>
+    </div>
+    <div class="card">
+        <h3 style="margin-top: 0;">Trail Admins</h3>
+        <p style="font-size: 1.8rem; font-weight: 700; margin: 0;">{{ total_admins }}</p>
+    </div>
+    <div class="card">
+        <h3 style="margin-top: 0;">Moderation Queue</h3>
+        <p class="muted">Flagged trail guides &amp; outdated transport reports will appear here.</p>
+    </div>
+</div>
+{% endblock %}

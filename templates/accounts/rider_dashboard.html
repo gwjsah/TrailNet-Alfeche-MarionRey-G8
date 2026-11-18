@@ -1,0 +1,32 @@
+{% extends 'base.html' %}
+
+{% block title %}Rider Dashboard | TrailNet{% endblock %}
+
+{% block content %}
+<div class="card" style="margin-bottom: 1.5rem;">
+    <h1 style="margin-top: 0;">Rider Dashboard</h1>
+    <p>Welcome, <strong>{{ user.first_name|default:user.username }}</strong> ({{ user.get_role_display }})</p>
+    <p class="muted">Discover Cebu trails, log segment times, and coordinate rides with your crew.</p>
+</div>
+
+<div class="grid">
+    <div class="card">
+        <h3 style="margin-top: 0;">Seed Trails</h3>
+        <p class="muted">Magdooc, Ichipan, and Tayad-Tayad trail guides and transport info.</p>
+    </div>
+    <div class="card">
+        <h3 style="margin-top: 0;">Segment Timing</h3>
+        <p class="muted">Manual segment timer and local leaderboards (coming in Sprint 4).</p>
+    </div>
+    <div class="card">
+        <h3 style="margin-top: 0;">Bike Setup</h3>
+        <p class="muted">
+            {% if user.bike_setup %}
+                {{ user.bike_setup }}
+            {% else %}
+                No bike setup added yet.
+            {% endif %}
+        </p>
+    </div>
+</div>
+{% endblock %}

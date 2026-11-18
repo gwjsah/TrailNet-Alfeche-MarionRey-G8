@@ -1,12 +1,15 @@
 from django.contrib import messages
-from django.contrib.auth import login, logout
+from django.contrib.auth import get_user_model, login, logout
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.forms import AuthenticationForm
 from django.shortcuts import redirect, render
 from django.utils.http import url_has_allowed_host_and_scheme
 from django.views.decorators.http import require_POST
 
+from .decorators import role_required
 from .forms import RiderRegistrationForm
+
+User = get_user_model()
 
 
 def register_view(request):
@@ -70,5 +73,28 @@ def logout_view(request):
 
 @login_required
 def dashboard_redirect_view(request):
-    """Protected landing view for logged-in users (role routing added next)."""
-    return render(request, 'accounts/dashboard_placeholder.html')
+    """Route logged-in users to the dashboard matching their role."""
+    if request.user.is_trail_admin():
+        return redirect('accounts:admin_dashboard')
+    return redirect('accounts:rider_dashboard')
+
+
+@role_required(User.ROLE_RIDER)
+def rider_dashboard_view(request):
+    """Dashboard for Riders showing trail activity, ride events, and bike setup."""
+    return render(request, 'accounts/rider_dashboard.html')
+
+
+@role_required(User.ROLE_ADMIN)
+def admin_dashboard_view(request):
+    """Dashboard for Trail Admins showing trail management and moderation overview."""
+    total_riders = User.objects.filter(role=User.ROLE_RIDER).count()
+    total_admins = User.objects.filter(role=User.ROLE_ADMIN).count()
+    return render(
+        request,
+        'accounts/admin_dashboard.html',
+        {
+            'total_riders': total_riders,
+            'total_admins': total_admins,
+        },
+    )
