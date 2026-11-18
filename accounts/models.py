@@ -1,5 +1,13 @@
-from django.contrib.auth.models import AbstractUser
+from django.contrib.auth.models import AbstractUser, UserManager as BaseUserManager
 from django.db import models
+
+
+class UserManager(BaseUserManager):
+    """Custom manager that assigns the Trail Admin role to superusers."""
+
+    def create_superuser(self, username, email=None, password=None, **extra_fields):
+        extra_fields.setdefault('role', self.model.ROLE_ADMIN)
+        return super().create_superuser(username, email=email, password=password, **extra_fields)
 
 
 class User(AbstractUser):
@@ -9,7 +17,7 @@ class User(AbstractUser):
     ROLE_ADMIN = 'admin'
     ROLE_CHOICES = [
         (ROLE_RIDER, 'Rider'),
-        (ROLE_ADMIN, 'Trail Admin'),
+        (ROLE_ADMIN, 'Admin'),
     ]
 
     email = models.EmailField(unique=True)
@@ -25,6 +33,8 @@ class User(AbstractUser):
         null=True,
     )
     bike_setup = models.CharField(max_length=120, blank=True)
+
+    objects = UserManager()
 
     def is_trail_admin(self):
         return self.role == self.ROLE_ADMIN or self.is_superuser
