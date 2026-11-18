@@ -157,6 +157,7 @@
                     {% else %}
                         <a href="{% url 'accounts:rider_dashboard' %}">Rider Dashboard</a>
                     {% endif %}
+                    <a href="{% url 'accounts:profile' %}">Profile</a>
                     <span>Hi, {{ user.username }}</span>
                     <form method="post" action="{% url 'accounts:logout' %}" style="display:inline;">
                         {% csrf_token %}

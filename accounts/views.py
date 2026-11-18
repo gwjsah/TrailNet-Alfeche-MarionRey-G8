@@ -7,7 +7,7 @@ from django.utils.http import url_has_allowed_host_and_scheme
 from django.views.decorators.http import require_POST
 
 from .decorators import role_required
-from .forms import RiderRegistrationForm
+from .forms import ProfileUpdateForm, RiderRegistrationForm
 
 User = get_user_model()
 
@@ -98,3 +98,29 @@ def admin_dashboard_view(request):
             'total_admins': total_admins,
         },
     )
+
+
+@login_required
+def profile_view(request):
+    """Display the currently logged-in user's own profile."""
+    return render(request, 'accounts/profile.html', {'profile_user': request.user})
+
+
+@login_required
+def profile_edit_view(request):
+    """Allow the currently logged-in user to update their own profile details."""
+    if request.method == 'POST':
+        form = ProfileUpdateForm(
+            request.POST,
+            request.FILES,
+            instance=request.user,
+        )
+        if form.is_valid():
+            form.save()
+            messages.success(request, 'Your profile has been updated.')
+            return redirect('accounts:profile')
+        messages.error(request, 'Please correct the errors below.')
+    else:
+        form = ProfileUpdateForm(instance=request.user)
+
+    return render(request, 'accounts/profile_edit.html', {'form': form})

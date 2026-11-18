@@ -1,0 +1,29 @@
+{% extends 'base.html' %}
+
+{% block title %}Edit Profile | TrailNet{% endblock %}
+
+{% block content %}
+<div class="card auth-card">
+    <h1 style="margin-top: 0;">Edit Profile</h1>
+    <p class="muted">Update your personal details and bike setup.</p>
+
+    <form method="post" enctype="multipart/form-data" novalidate>
+        {% csrf_token %}
+
+        {% for field in form %}
+            <div class="form-group">
+                <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+                {{ field }}
+                {% if field.errors %}
+                    {{ field.errors }}
+                {% endif %}
+            </div>
+        {% endfor %}
+
+        <div style="display: flex; gap: 0.75rem;">
+            <button type="submit" class="btn">Save Changes</button>
+            <a href="{% url 'accounts:profile' %}" class="btn" style="background: #52606d;">Cancel</a>
+        </div>
+    </form>
+</div>
+{% endblock %}
