@@ -1,0 +1,33 @@
+{% extends 'base.html' %}
+
+{% block title %}Log In | TrailNet{% endblock %}
+
+{% block content %}
+<div class="card auth-card">
+    <h1 style="margin-top: 0;">Log in to TrailNet</h1>
+    <p class="muted">Enter your username and password to continue.</p>
+
+    <form method="post" novalidate>
+        {% csrf_token %}
+        {% if next %}
+            <input type="hidden" name="next" value="{{ next }}">
+        {% endif %}
+
+        {% for field in form %}
+            <div class="form-group">
+                <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+                {{ field }}
+                {% if field.errors %}
+                    {{ field.errors }}
+                {% endif %}
+            </div>
+        {% endfor %}
+
+        <button type="submit" class="btn btn-full">Log In</button>
+    </form>
+
+    <p class="muted" style="margin-top: 1.25rem; text-align: center;">
+        New to TrailNet? <a href="{% url 'accounts:register' %}">Create an account</a>
+    </p>
+</div>
+{% endblock %}
